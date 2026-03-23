@@ -1,9 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
 
 @theme inline {
-	--font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif,
+	--font-sans: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
 	--color-background: var(--background);

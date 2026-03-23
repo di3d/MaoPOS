@@ -15,8 +15,11 @@
 		ClipboardList,
 		Settings,
 		Menu,
-		Clock
+		Clock,
+		Sun,
+		Moon
 	} from '@lucide/svelte';
+	import { toggleMode, mode } from 'mode-watcher';
 
 	let { children, data } = $props();
 
@@ -66,7 +69,7 @@
 		const item = navItems.find((n) => isActive(n.href, path));
 		if (item) return item.label;
 		if (isActive(settingsItem.href, path)) return settingsItem.label;
-		return 'PC POS System';
+		return 'MaoPOS';
 	}
 
 	$effect(() => {
@@ -90,7 +93,7 @@
 		<!-- Branding -->
 		<div class="flex h-14 items-center gap-2 border-b px-4">
 			<Monitor class="h-6 w-6 text-primary" />
-			<span class="text-lg font-bold tracking-tight">PC POS System</span>
+			<span class="text-lg font-bold tracking-tight">MaoPOS</span>
 		</div>
 
 		<!-- Navigation -->
@@ -135,7 +138,7 @@
 		<Sheet.Content side="left" class="w-60 p-0">
 			<Sheet.Header class="flex h-14 flex-row items-center gap-2 border-b px-4">
 				<Monitor class="h-6 w-6 text-primary" />
-				<Sheet.Title class="text-lg font-bold tracking-tight">PC POS System</Sheet.Title>
+				<Sheet.Title class="text-lg font-bold tracking-tight">MaoPOS</Sheet.Title>
 			</Sheet.Header>
 
 			<nav class="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
@@ -195,10 +198,19 @@
 				<h1 class="text-lg font-semibold">{getPageTitle($page.url.pathname)}</h1>
 			</div>
 
-			<div class="flex items-center gap-2 text-sm text-muted-foreground">
+			<div class="flex items-center gap-3 text-sm text-muted-foreground">
 				<Clock class="h-4 w-4" />
 				<span class="hidden sm:inline">{currentDate}</span>
 				<span class="font-medium text-foreground">{currentTime}</span>
+
+				<Button variant="ghost" size="icon" onclick={toggleMode} class="ml-1">
+					{#if $mode === 'dark'}
+						<Sun class="h-4 w-4" />
+					{:else}
+						<Moon class="h-4 w-4" />
+					{/if}
+					<span class="sr-only">Toggle theme</span>
+				</Button>
 			</div>
 		</header>
 
