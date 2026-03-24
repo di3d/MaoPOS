@@ -25,10 +25,22 @@
 </script>
 
 <div class="mx-auto max-w-4xl space-y-6">
+	<!-- Print-only header with store name -->
+	<div class="hidden print:block text-center mb-6">
+		<h1 class="text-2xl font-bold">{data.settings?.businessName ?? 'MaoPOS'}</h1>
+		{#if data.settings?.businessAddress}
+			<p class="text-sm text-muted-foreground">{data.settings.businessAddress}</p>
+		{/if}
+		{#if data.settings?.businessPhone}
+			<p class="text-sm text-muted-foreground">{data.settings.businessPhone}</p>
+		{/if}
+		<hr class="mt-3" />
+	</div>
+
 	<!-- Header -->
 	<div class="flex items-center justify-between">
 		<div class="flex items-center gap-3">
-			<Button variant="outline" size="icon" href="/sales/history">
+			<Button variant="outline" size="icon" href="/sales/history" data-print-hide>
 				<ArrowLeft class="h-4 w-4" />
 			</Button>
 			<div>
@@ -40,7 +52,7 @@
 			<Badge variant={data.sale.status === 'completed' ? 'default' : 'destructive'}>
 				{data.sale.status}
 			</Badge>
-			<Button variant="outline" onclick={() => window.print()}>
+			<Button variant="outline" onclick={() => window.print()} data-print-hide>
 				<Printer class="mr-2 h-4 w-4" />
 				Print
 			</Button>
