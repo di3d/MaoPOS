@@ -19,7 +19,7 @@
 		Sun,
 		Moon
 	} from '@lucide/svelte';
-	import { toggleMode, mode } from 'mode-watcher';
+	import { toggleMode } from 'mode-watcher';
 
 	let { children, data } = $props();
 
@@ -204,11 +204,8 @@
 				<span class="font-medium text-foreground">{currentTime}</span>
 
 				<Button variant="ghost" size="icon" onclick={toggleMode} class="ml-1">
-					{#if $mode === 'dark'}
-						<Sun class="h-4 w-4" />
-					{:else}
-						<Moon class="h-4 w-4" />
-					{/if}
+					<Sun class="h-4 w-4 hidden dark:block" />
+					<Moon class="h-4 w-4 block dark:hidden" />
 					<span class="sr-only">Toggle theme</span>
 				</Button>
 			</div>
