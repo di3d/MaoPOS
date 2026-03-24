@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+	import { toast } from 'svelte-sonner';
 	import PageHeader from '$lib/components/app/PageHeader.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -107,7 +109,34 @@
 </div>
 
 <!-- Stock Take Table -->
-<form method="POST" action="?/commit" use:enhance>
+<form
+	method="POST"
+	action="?/commit"
+	use:enhance={({ formData }) => {
+		// Inject current counted state before submission
+		for (const product of countedProducts) {
+			formData.append(`products[${product.id}].id`, String(product.id));
+			formData.append(`products[${product.id}].systemQty`, String(product.stockQty));
+			formData.append(`products[${product.id}].countedQty`, String(parseInt(product.countedQty) || 0));
+		}
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				toast.success('Stock take committed successfully');
+				await invalidateAll();
+				// Reset counted quantities to match new system quantities
+				countedProducts = data.products.map((p) => ({
+					id: p.id,
+					sku: p.sku,
+					name: p.name,
+					stockQty: p.stockQty,
+					countedQty: String(p.stockQty)
+				}));
+			} else {
+				toast.error('Failed to commit stock take');
+			}
+		};
+	}}
+>
 	<Card.Root>
 		<Card.Content class="p-0">
 			<Table.Root>
@@ -146,13 +175,6 @@
 			</Table.Root>
 		</Card.Content>
 	</Card.Root>
-
-	<!-- Hidden inputs for form submission -->
-	{#each countedProducts as product (product.id)}
-		<input type="hidden" name="products[{product.id}].id" value={product.id} />
-		<input type="hidden" name="products[{product.id}].systemQty" value={product.stockQty} />
-		<input type="hidden" name="products[{product.id}].countedQty" value={parseInt(product.countedQty) || 0} />
-	{/each}
 
 	<div class="mt-6 flex items-center justify-between">
 		{#if itemsWithVariance > 0}
